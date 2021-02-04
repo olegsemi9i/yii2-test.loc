@@ -20,6 +20,7 @@ use yii\web\UploadedFile;
 class Author extends \yii\db\ActiveRecord
 {
     public $file;
+    public $path = 'uploads';
    
     /**
      * {@inheritdoc}
@@ -67,7 +68,7 @@ class Author extends \yii\db\ActiveRecord
      */
     public function getMessages()
     {
-        return $this->hasMany(Message::className(), ['author_id' => 'id']);
+        return $this->hasMany(Message::className(), ['author_id' => 'id'])->orderBy('id DESC');;
     }
     
     public function beforeSave($insert)
@@ -95,14 +96,14 @@ class Author extends \yii\db\ActiveRecord
     {
         if($this->file){
             $name = $this->file->baseName.'.'.$this->file->extension; 
-            $this->file->saveAs('uploads/'.$name, false);
+            $this->file->saveAs($this->path.'/'.$name, false);
             $this->img = $name;
         } 
     }
     
     public function getImageurl()
     {
-        return \Yii::$app->request->BaseUrl.'/uploads/'.$this->img;
+        return \Yii::$app->request->BaseUrl.'/'.$this->path.'/'.$this->img;
     }
     
 }
